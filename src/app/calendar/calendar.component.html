@@ -1,0 +1,36 @@
+<div class="calendar">
+  <div class="periods">
+    <div class="blank-space" *ngFor="let i of [a]">
+      <!-- This leaves a blank space at the start of the first column -->
+    </div>
+    <div class="period" *ngFor="let hour of hours" [style.font]="bold" >
+      {{ hour }}
+    </div>
+  </div>
+  <div class="days">
+    <div class="day" *ngFor="let day of days">
+      <h2 class="day-name">{{ day }}</h2>
+      <div class="hour" *ngFor="let hour of hours">
+        <div class="subject" *ngFor="let subject of randomSubject()" [style.background-color]="subject.color">
+          <!-- randomSubject() is used temporarily to fill the calendar with random subjects-->
+          {{ subject.name }} - {{ subject.division }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="subjects">
+    <div class="subject-list">
+      <mat-checkbox class="selected-subject" *ngFor="let selectedSubject of selectedSubjects">
+        {{ selectedSubject.name }}
+      </mat-checkbox>
+    </div>
+    <mat-form-field class="subject-chooser">
+      <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="subjectSelected($event)">
+        <mat-option *ngFor="let option of filteredOptions" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+</div>

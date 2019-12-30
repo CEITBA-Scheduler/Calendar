@@ -1,0 +1,61 @@
+.h2 {
+  font: bold;
+}
+
+.calendar {
+    width: 400px;
+    max-width: 100%;
+    display: inline-flex;            /* So that columns are displayed horizontally */
+    text-align: center;
+  }
+  
+  .day {
+    border: solid 1px #ccc;
+    min-height: 70px;
+    min-width: 130px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+  }
+  
+  .subject {
+    border: solid 1px #ccc;
+    min-height: 70px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .blank-space {
+    border: solid 1px #ccc;
+    min-height: 67px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .period {
+    text-align: center;
+    border: solid 1px #ccc;
+    min-height: 70px;
+    min-width: 45px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+  }
+  
+  .days {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .periods {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+  }
