@@ -21,11 +21,12 @@
   
   .subject {
     border: solid 1px #ccc;
-    min-height: 70px;
+    min-height: 40px;
     background: white;
     border-radius: 4px;
     overflow: hidden;
     display: block;
+    text-align: center;
   }
 
   .blank-space {
@@ -38,12 +39,13 @@
   }
 
   .period {
-    text-align: center;
-    border: solid 1px #ccc;
-    min-height: 70px;
+    box-sizing: border-box;
     min-width: 45px;
-    background: white;
+    padding: 11px;
+    border: solid 1px #ccc;
     border-radius: 4px;
+    text-align: center;
+    background: white;
     overflow: hidden;
     display: block;
   }
@@ -58,4 +60,21 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
+  }
+
+  .subject-list {
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    margin: 0px 30px;
+    padding: 5px 100px 5px 10px;
+    text-align: left;
+  }
+
+  .selected-schedule {
+    font-size: large;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .selected-comission {
+    font-size: medium;
   }
