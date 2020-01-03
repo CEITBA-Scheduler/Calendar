@@ -24,7 +24,7 @@ interface Subject {
   teachers?: string;        // Same as above
   commissionName: string;
   color: string;
-  commissionTimes?: CommissionTime[];
+  commissionTimes?: CommissionTime;
 }
 
 interface CommissionTime {
@@ -45,10 +45,14 @@ export class CalendarComponent implements OnInit {
   schedules: possibleSchedules[] = [
     {
       subjects: [
-        { name: 'Algebra', color: '#435332', commissionName: 'Comision 2' },
-        { name: 'Matematica 1', color: '#123', commissionName: 'Comision 1' },
-        { name: 'Fisica', color: '#adc242', commissionName: 'Comision 3' },
-        { name: 'PI', color: '#FFaaFF', commissionName: 'Comision 4' }       
+        { name: 'Algebra', color: '#435332', commissionName: 'Comision 2',
+        commissionTimes: { day: "Lunes", initialHour: { hours:14, minutes:30 }, finalHour: { hours:18, minutes:30 }}},
+        { name: 'Matematica 1', color: '#123', commissionName: 'Comision 1',
+        commissionTimes: { day: "Martes", initialHour: { hours:9, minutes:0 }, finalHour: { hours:11, minutes:0 }}},
+        { name: 'PI', color: '#FFaaFF', commissionName: 'Comision 4',
+        commissionTimes: { day: "Miercoles", initialHour: { hours:10, minutes:30 }, finalHour: { hours:14, minutes:0 }}},
+        { name: 'Fisica', color: '#adc242', commissionName: 'Comision 3',
+        commissionTimes: { day: "Viernes", initialHour: { hours:13, minutes:0 }, finalHour: { hours:16, minutes:30 }}}
       ]
     }
   ]
@@ -63,40 +67,67 @@ export class CalendarComponent implements OnInit {
     { name: 'Algebra', color: '#435332', commissionName: 'Comision 2' },
     { name: 'Fisica', color: '#adc242', commissionName: 'Comision 3' },
     { name: 'PI', color: '#FFaaFF', commissionName: 'Comision 4' },
-  ];
-  */
+  ]; */
   filteredOptions: Subject[] = [];
   subjectChooserValue: string = '';
   randomNumbersGenerated: number[] = [];
-  checkedStatus = true;
+  checkedStatus: boolean = true;
+  currentSubjectIndex: number;                // Used to plot subjects when in between initialHour and finalHour on subjectOn()
 
   constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     for (let x = 8; x < 22; x+=0.5) {
-      if( x % 2 == 0 || x % 2 == 1)
+      if (x % 2 == 0 || x % 2 == 1)
         this.hours.push(`${x}:00`);
       else
-        this.hours.push(`${Math.floor(x)}:30`)
-    }
-    for (let i = 0; i < 70; i++) {
-      this.randomNumbersGenerated.push(Math.floor(Math.random()*4));
+        this.hours.push(`${Math.floor(x)}:30`);
     }
   }
 
+  // Checks if there's a subject on the day and hour sent
   subjectOn(day: string, hour: string): Subject[] {
-    return [this.schedules[0].subjects[0]];       // Returnes a subject to plot on the whole calendar. Used for testing  
+    var subject : Subject[];
+    var m: number;
+    for (m = 0 ; m < this.schedules[0].subjects.length; m++) {
+      if (day == this.schedules[0].subjects[m].commissionTimes.day) {
+        if (hour == this.hourToString(this.schedules[0].subjects[m].commissionTimes.initialHour.hours, this.schedules[0].subjects[m].commissionTimes.initialHour.minutes)) {
+          subject = [this.schedules[0].subjects[m]];
+          this.currentSubjectIndex = m;
+          break;
+        }
+        else if (hour == this.hourToString(this.schedules[0].subjects[m].commissionTimes.finalHour.hours, this.schedules[0].subjects[m].commissionTimes.finalHour.minutes)) {
+          subject = [this.schedules[0].subjects[m]];
+          this.currentSubjectIndex = this.schedules[0].subjects.length + 1; // So that no subject have an index equal to currentSubjectIndex
+          break;
+        }
+        else if (m == this.currentSubjectIndex) {
+          subject = [this.schedules[0].subjects[m]];
+          break;
+        }
+      }
+    }
+    if (m >= this.schedules[0].subjects.length)          // >= used instead of == bc they do the same except when a bug makes m greater than expected
+      subject = [{ name:"", color:"", commissionName:""}];
+    return subject;
   }
-  
+
+  hourToString(hour: number, minutes: number): String {
+    if (minutes.toString() != "0")
+      return hour.toString() + ":" + minutes.toString();
+    else
+      return hour.toString() + ":" + minutes.toString() + "0";
+  }
+
   // Code not used atm
   /*
   displayFn(subject?: Subject): string | undefined {
     return subject ? subject.name : undefined;
+
   }
-  
-  
+
   onSubjectChooserChange() {
-    this.filteredOptions = this.availableSubjects.filter(subj => 
+    this.filteredOptions = this.availableSubjects.filter(subj =>
       subj.name.toLowerCase().startsWith(this.subjectChooserValue.toLowerCase())
     );
   }
