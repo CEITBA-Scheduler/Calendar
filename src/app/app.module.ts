@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatInputModule, MatButtonModule, MatCheckboxModule, MatAutocompleteModule } from '@angular/material';
+import { MatInputModule, MatButtonModule, MatCheckboxModule, MatAutocompleteModule, MatListModule, MatCardModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -23,6 +23,8 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatCheckboxModule,
     MatAutocompleteModule,
+    MatListModule,
+    MatCardModule,
     FormsModule
   ],
   providers: [],

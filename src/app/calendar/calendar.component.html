@@ -17,17 +17,27 @@
       </div>
     </div>
   </div>
-  <div class="subjects">
-    <div class="subject-list">
-      <div class="selected-schedule" *ngFor="let selectedSchedule of schedules">
-        <div class="selected-subject" *ngFor="let selectedSubject of selectedSchedule.subjects">
-          {{ selectedSubject.name }}
-          <mat-checkbox class="selected-comission" [checked]="checkedStatus">
-            {{ selectedSubject.commissionName }}
-          </mat-checkbox>
-        </div>
-      </div>
-    </div> 
+  <div class="lateral-bar">
+    <h1>Materias</h1>
+    <div class="subject-list" *ngFor="let subj of subjectList"> 
+      {{ subj.subject.name }}
+      <mat-checkbox class="selected-comission" [(ngModel)]="subj.checked" (change)="switchSubjectState(subj)">
+        {{ subj.subject.commissionName }}
+      </mat-checkbox>
+    </div>
+  </div>
+</div>
+    <!-- Switch subjectList with selectedSchedule here to see its behaviour when adding/removing subjects -->
+    <!--
+      <div class="lateral-bar"> 
+  </div>
+    <div class="subject-list" *ngFor="let subject of subjectList"> 
+      {{ subject.name }}
+      <mat-checkbox class="selected-comission" [(ngModel)]="subject.checked" (change)="switchSubjectState(subject)">
+        {{ subject.commissionName }}
+      </mat-checkbox>
+    </div>
+    -->
     <!--
     <mat-form-field class="subject-chooser">
       <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
@@ -37,6 +47,4 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-  -->
-  </div>
-</div>
+    -->
