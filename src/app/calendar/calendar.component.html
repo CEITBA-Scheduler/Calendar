@@ -20,11 +20,22 @@
   <div class="lateral-bar">
     <h1>Materias</h1>
     <div class="subject-list" *ngFor="let subj of subjectList"> 
-      {{ subj.subject.name }}
+      <h3>
+        {{ subj.subject.name }}
+        <mat-icon svgIcon="delete" aria-hidden="false"></mat-icon>
+      </h3>
       <mat-checkbox class="selected-comission" [(ngModel)]="subj.checked" (change)="switchSubjectState(subj)">
         {{ subj.subject.commissionName }}
       </mat-checkbox>
     </div>
+    <mat-form-field class="subject-chooser">
+      <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="subjectSelected($event)">
+          <mat-option *ngFor="let option of filteredOptions" [value]="option">
+            {{ option.name }}
+          </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
   </div>
 </div>
     <!-- Switch subjectList with selectedSchedule here to see its behaviour when adding/removing subjects -->
@@ -47,4 +58,14 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
+        <div class="subject-chooser">
+      <mat-form-field>
+        <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="subjectSelected($event)">
+            <mat-option *ngFor="let option of filteredOptions" [value]="option">
+              {{ option.name }}
+            </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
     -->

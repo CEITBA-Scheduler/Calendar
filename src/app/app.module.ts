@@ -8,6 +8,8 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatInputModule, MatButtonModule, MatCheckboxModule, MatAutocompleteModule, MatListModule, MatCardModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from "@angular/material/icon";
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { FormsModule } from '@angular/forms';
     MatAutocompleteModule,
     MatListModule,
     MatCardModule,
+    MatIconModule,
+    HttpClientModule,
     FormsModule
   ],
   providers: [],

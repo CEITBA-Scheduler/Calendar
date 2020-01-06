@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 */
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { Time } from '@angular/common';
+import { MatIconRegistry} from "@angular/material/icon"
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 /* "Dummy" datatypes to simulate obtained data through the algorithm */
@@ -64,6 +66,10 @@ export class CalendarComponent implements OnInit {
   subjectList: SubjectList[] = [];
   // Used to plot subjects when in between initialHour and finalHour on subjectOn()
   currentSubjectIndex: number = this.schedules[0].subjects.length + 1;
+  // Contains all the subjects that can be taken minus the ones that have already been plotted. Using Logica as dummy datatype atm
+  availableSubjects: Subject[] = 
+  [{ name: "Logica", color:"#FF8921", commissionName:"Comision 1", 
+  commissionTimes: { day: "Jueves", initialHour: {hours:8, minutes:0}, finalHour: {hours: 11, minutes: 30} } }];
 
   days = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']
   hours: string[] = [];
@@ -71,7 +77,10 @@ export class CalendarComponent implements OnInit {
   subjectChooserValue: string = '';
   selectedStatus: boolean = true;
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    // Adds link (with safe status bc of sanitizer) of trash can img
+    iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('/assets/img/delete-icon.svg'));
+  }
 
   ngOnInit() {
     for (let x = 8; x < 22; x+=0.5) {
@@ -129,7 +138,6 @@ export class CalendarComponent implements OnInit {
         && subj.subject.commissionTimes === this.selectedSchedule[i].commissionTimes
         && subj.subject.teachers === this.selectedSchedule[i].teachers ) {
           this.selectedSchedule.splice(i, 1);
-          console.log(subj.subject.name + " removed on position " + i);
           break;
         }
       }
@@ -139,7 +147,7 @@ export class CalendarComponent implements OnInit {
   }
 
   // Code not used atm
-  /*
+  
   displayFn(subject?: Subject): string | undefined {
     return subject ? subject.name : undefined;
 
@@ -153,11 +161,12 @@ export class CalendarComponent implements OnInit {
 
   subjectSelected(event: MatAutocompleteSelectedEvent) {
     const selectedSubject: Subject = event.option.value;
-    this.selectedSubjects.push(selectedSubject);
+    this.selectedSchedule.push(selectedSubject);
+    this.subjectList.push({checked: true, subject: Object.assign({}, selectedSubject)})
     this.availableSubjects.splice(this.availableSubjects.indexOf(selectedSubject), 1);
     this.subjectChooserValue = "";
     this.onSubjectChooserChange();
     this.cd.detectChanges();
   }
-  */
+
 }

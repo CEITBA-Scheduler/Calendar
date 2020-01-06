@@ -1,5 +1,15 @@
-.h2 {
-  font: bold;
+h1 {
+  margin: 10px 0px 10px 53px; /* TOP RIGHT BOOTM LEFT */
+}
+
+h2 {
+  font: Arial, Helvetica, sans-serif;
+}
+
+h3 {
+  font: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  margin: 2px 0px;
 }
 
 .calendar {
@@ -66,11 +76,12 @@
     border: solid 1px #ccc;
     border-radius: 4px;
     margin: 0px 30px;
-    padding: 5px 100px 5px 10px;
+    padding: 5px 60px 5px 10px;
     text-align: left;
   }
 
   .subject-list {
+    float: left;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
   }
@@ -78,4 +89,13 @@
   .selected-comission {
     font-size: medium;
     font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .subject-chooser {
+    float: left;
+    margin-top: 5px;
+  }
+
+  .trash-can-icon {
+    text-align: right;
   }
