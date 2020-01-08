@@ -5,9 +5,8 @@ import { Observable } from 'rxjs';
 */
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { Time } from '@angular/common';
-import { MatIconRegistry} from "@angular/material/icon"
+import { MatIconRegistry} from "@angular/material/icon";
 import { DomSanitizer } from '@angular/platform-browser';
-
 
 /* "Dummy" datatypes to simulate obtained data through the algorithm */
 interface possibleSchedules {
@@ -44,6 +43,9 @@ interface SubjectList {
 })
 
 export class CalendarComponent implements OnInit {
+  constructor(private cd: ChangeDetectorRef) {
+
+  }
 
   schedules: possibleSchedules[] = [
     {
@@ -60,27 +62,20 @@ export class CalendarComponent implements OnInit {
     }
   ]
 
-  // Contains the subjects/comissions displayed on the current calendar. NOTE: Using Object.assign bc = results in a dynamic = instead of a one timer
-  selectedSchedule: Subject[] = Object.assign([], this.schedules[0].subjects);
-  // Contains the subject list displayed on the lateral bar
+  // Contains the subject list displayed on the lateral bar. Subjects are shown on the calendar depending on its checkbox status
   subjectList: SubjectList[] = [];
   // Used to plot subjects when in between initialHour and finalHour on subjectOn()
-  currentSubjectIndex: number = this.schedules[0].subjects.length + 1;
+  currentSubjectIndex: number = -1;
   // Contains all the subjects that can be taken minus the ones that have already been plotted. Using Logica as dummy datatype atm
   availableSubjects: Subject[] = 
   [{ name: "Logica", color:"#FF8921", commissionName:"Comision 1", 
   commissionTimes: { day: "Jueves", initialHour: {hours:8, minutes:0}, finalHour: {hours: 11, minutes: 30} } }];
 
-  days = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']
+  days = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
   hours: string[] = [];
   filteredOptions: Subject[] = [];
   subjectChooserValue: string = '';
   selectedStatus: boolean = true;
-
-  constructor(private cd: ChangeDetectorRef, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    // Adds link (with safe status bc of sanitizer) of trash can img
-    iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('/assets/img/delete-icon.svg'));
-  }
 
   ngOnInit() {
     for (let x = 8; x < 22; x+=0.5) {
@@ -96,30 +91,30 @@ export class CalendarComponent implements OnInit {
 
   // Checks if there's a subject on the day and hour sent
   subjectOn (day: string, hour: string): Subject[] {
-    var subject : Subject[];
-    var m: number;
-    for (m = 0 ; m < this.selectedSchedule.length; m++) {
-      if (day === this.selectedSchedule[m].commissionTimes.day) {
-        if (hour === this.hourToString(this.selectedSchedule[m].commissionTimes.initialHour.hours, this.selectedSchedule[m].commissionTimes.initialHour.minutes)) {
-          subject = [this.selectedSchedule[m]];
-          this.currentSubjectIndex = m;
-          break;
-        }
-        else if (hour === this.hourToString(this.selectedSchedule[m].commissionTimes.finalHour.hours, this.selectedSchedule[m].commissionTimes.finalHour.minutes)) {
-          subject = [{ name:"", color:"", commissionName:""}];
-          this.currentSubjectIndex = this.schedules[0].subjects.length + 1; // So that no subject have an index equal to currentSubjectIndex
-          break;
-        }
-        else if (m === this.currentSubjectIndex) {
-          subject = [this.selectedSchedule[m]];
-          break;
-        }
+  var subject : Subject[];
+  var m: number;
+  for (m = 0 ; m < this.subjectList.length; m++) {
+    if (day === this.subjectList[m].subject.commissionTimes.day) {
+      if (hour === this.hourToString(this.subjectList[m].subject.commissionTimes.initialHour.hours, this.subjectList[m].subject.commissionTimes.initialHour.minutes) && this.subjectList[m].checked) {
+        subject = [this.subjectList[m].subject];
+        this.currentSubjectIndex = m;
+        break;
+      }
+      else if (hour === this.hourToString(this.subjectList[m].subject.commissionTimes.finalHour.hours, this.subjectList[m].subject.commissionTimes.finalHour.minutes) && this.subjectList[m].checked) {
+        subject = [{ name:"", color:"", commissionName:""}];
+        this.currentSubjectIndex = -1; // So that no subject have an index equal to currentSubjectIndex
+        break;
+      }
+      else if (m === this.currentSubjectIndex && this.subjectList[m].checked) {
+        subject = [this.subjectList[m].subject];
+        break;
       }
     }
-    if (m >= this.selectedSchedule.length)          // >= used instead of == bc they do the same except when a bug makes m greater than expected
-      subject = [{ name:"", color:"", commissionName:""}];
-    return subject;
   }
+  if (m >= this.subjectList.length)          // >= used instead of == bc they do the same except when a bug makes m greater than expected
+    subject = [{ name:"", color:"", commissionName:""}];
+  return subject;
+}
 
   hourToString (hour: number, minutes: number): String {
     if (minutes.toString() !== "0")
@@ -128,29 +123,8 @@ export class CalendarComponent implements OnInit {
       return hour.toString() + ":" + minutes.toString() + "0";
   }
 
-  switchSubjectState (subj: SubjectList) {
-    if (!subj.checked) {
-      for (let i = 0 ; i < this.selectedSchedule.length ; i++) {
-        // Tried comparing each object instead of each object.field but didn´t work, so went with the latter
-        if (subj.subject.name === this.selectedSchedule[i].name
-        && subj.subject.color === this.selectedSchedule[i].color
-        && subj.subject.commissionName === this.selectedSchedule[i].commissionName
-        && subj.subject.commissionTimes === this.selectedSchedule[i].commissionTimes
-        && subj.subject.teachers === this.selectedSchedule[i].teachers ) {
-          this.selectedSchedule.splice(i, 1);
-          break;
-        }
-      }
-    }
-    else
-      this.selectedSchedule.push(subj.subject);
-  }
-
-  // Code not used atm
-  
   displayFn(subject?: Subject): string | undefined {
     return subject ? subject.name : undefined;
-
   }
 
   onSubjectChooserChange() {
@@ -161,12 +135,31 @@ export class CalendarComponent implements OnInit {
 
   subjectSelected(event: MatAutocompleteSelectedEvent) {
     const selectedSubject: Subject = event.option.value;
-    this.selectedSchedule.push(selectedSubject);
-    this.subjectList.push({checked: true, subject: Object.assign({}, selectedSubject)})
+    this.subjectList.push( {checked: true, subject: Object.assign({}, selectedSubject)} );
     this.availableSubjects.splice(this.availableSubjects.indexOf(selectedSubject), 1);
     this.subjectChooserValue = "";
     this.onSubjectChooserChange();
     this.cd.detectChanges();
+  }
+
+  deleteComissionFromList(subj: Subject) {
+    for (let i = 0 ; i < this.subjectList.length ; i++) {
+      if (this.subjectsAreEqual(subj, this.subjectList[i].subject)) {
+        this.subjectList.splice(i, 1);
+        this.availableSubjects.push(subj);
+      }
+    }
+  }
+
+  subjectsAreEqual(subj1: Subject, subj2: Subject): boolean {
+    if ( subj1.name === subj2.name
+      && subj1.color === subj2.color
+      && subj1.commissionName === subj2.commissionName
+      && subj1.commissionTimes === subj2.commissionTimes
+      && subj1.teachers === subj2.teachers )
+      return true;
+    else
+      return false;
   }
 
 }

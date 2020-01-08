@@ -81,9 +81,10 @@ h3 {
   }
 
   .subject-list {
-    float: left;
+    display: inline-block;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
   }
 
   .selected-comission {
@@ -96,6 +97,16 @@ h3 {
     margin-top: 5px;
   }
 
-  .trash-can-icon {
-    text-align: right;
+  .delete {
+    border: solid 1px #ccc;
+    margin-left: 0px;
+    vertical-align: bottom;
+  }
+
+  .img-container {
+    padding: 0px 0px;
+    margin: 0px 15px;
+    /* Width/Height values were taken from img file*/
+    max-width: 20;
+    max-height: 20;
   }

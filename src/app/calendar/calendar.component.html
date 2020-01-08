@@ -22,11 +22,11 @@
     <div class="subject-list" *ngFor="let subj of subjectList"> 
       <h3>
         {{ subj.subject.name }}
-        <mat-icon svgIcon="delete" aria-hidden="false"></mat-icon>
       </h3>
-      <mat-checkbox class="selected-comission" [(ngModel)]="subj.checked" (change)="switchSubjectState(subj)">
+      <mat-checkbox class="selected-comission" [(ngModel)]="subj.checked">
         {{ subj.subject.commissionName }}
       </mat-checkbox>
+      <button class="img-container" mat-button-toggle (click)="deleteComissionFromList(subj.subject)"><img class="delete" src="/assets/img/delete-icon.svg"></button>
     </div>
     <mat-form-field class="subject-chooser">
       <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
@@ -40,6 +40,7 @@
 </div>
     <!-- Switch subjectList with selectedSchedule here to see its behaviour when adding/removing subjects -->
     <!--
+      <mat-icon svgIcon="delete" aria-hidden="false">delete</mat-icon>
       <div class="lateral-bar"> 
   </div>
     <div class="subject-list" *ngFor="let subject of subjectList"> 
