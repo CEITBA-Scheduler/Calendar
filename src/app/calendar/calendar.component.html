@@ -29,7 +29,7 @@
       <button class="img-container" mat-button-toggle (click)="deleteComissionFromList(subj.subject)"><img class="delete" src="/assets/img/delete-icon.svg"></button>
     </div>
     <mat-form-field class="subject-chooser">
-      <input type="text" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
+      <input type="text" [disabled]="subjectChooserDisabled" placeholder="Agregar materia" matInput [matAutocomplete]="auto" (input)="onSubjectChooserChange($event)" [(ngModel)]="subjectChooserValue">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="subjectSelected($event)">
           <mat-option *ngFor="let option of filteredOptions" [value]="option">
             {{ option.name }}

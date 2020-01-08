@@ -5,8 +5,7 @@ import { Observable } from 'rxjs';
 */
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { Time } from '@angular/common';
-import { MatIconRegistry} from "@angular/material/icon";
-import { DomSanitizer } from '@angular/platform-browser';
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 /* "Dummy" datatypes to simulate obtained data through the algorithm */
 interface possibleSchedules {
@@ -76,6 +75,7 @@ export class CalendarComponent implements OnInit {
   filteredOptions: Subject[] = [];
   subjectChooserValue: string = '';
   selectedStatus: boolean = true;
+  subjectChooserDisabled: boolean = false;
 
   ngOnInit() {
     for (let x = 8; x < 22; x+=0.5) {
@@ -137,8 +137,11 @@ export class CalendarComponent implements OnInit {
     const selectedSubject: Subject = event.option.value;
     this.subjectList.push( {checked: true, subject: Object.assign({}, selectedSubject)} );
     this.availableSubjects.splice(this.availableSubjects.indexOf(selectedSubject), 1);
+    console.log(this.availableSubjects.length);
     this.subjectChooserValue = "";
     this.onSubjectChooserChange();
+    if (this.availableSubjects.length == 0) 
+      this.subjectChooserDisabled = true;
     this.cd.detectChanges();
   }
 
@@ -149,6 +152,7 @@ export class CalendarComponent implements OnInit {
         this.availableSubjects.push(subj);
       }
     }
+    this.subjectChooserDisabled = false;
   }
 
   subjectsAreEqual(subj1: Subject, subj2: Subject): boolean {
