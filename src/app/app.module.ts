@@ -10,11 +10,15 @@ import { MatInputModule, MatButtonModule, MatCheckboxModule, MatAutocompleteModu
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { HttpClientModule } from "@angular/common/http";
+import { TestComponent } from './test/test.component';
+import { TestOutputComponent } from './test-output/test-output.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CalendarComponent
+    CalendarComponent,
+    TestComponent,
+    TestOutputComponent
   ],
   imports: [
     BrowserModule,
